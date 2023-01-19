@@ -8,7 +8,7 @@ func routes(_ app: Application) throws {
     }
     
     app.get(".well-known", "apple-app-site-association") { req -> Response in
-        let appIdentifier = "YWLW23LT6G.io.brokenhands.demos.auth.Shiny"
+        let appIdentifier = "TeamIdentifier.bundleIdentifier"
         let responseString =
             """
             {
@@ -49,6 +49,7 @@ func routes(_ app: Application) throws {
         return req.redirect(to: "/")
     }
     
+    // step 1 for registration
     authSessionRoutes.get("makeCredential") { req -> MakeCredentialResponse in
         let username = try req.query.get(String.self, at: "username")
         let userID = UUID()
@@ -70,10 +71,10 @@ func routes(_ app: Application) throws {
         }
         let registerData = try req.content.decode(RegisterWebAuthnCredentialData.self)
         
-        guard let origin = Environment.get("ORIGIN") else {
-            throw Abort(.internalServerError)
-        }
-        
+//        guard let origin = Environment.get("ORIGIN") else {
+//            throw Abort(.internalServerError)
+//        }
+        let origin = "origin"
         let credential = try WebAuthn.parseRegisterCredentials(registerData, challengeProvided: challenge, origin: origin, logger: req.logger)
         
         guard let username = req.session.data["username"], let userIDString = req.session.data["userID"], let userID = UUID(uuidString: userIDString) else {

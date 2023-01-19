@@ -49,9 +49,9 @@ public enum WebAuthn {
         guard clientObject.type == "webauthn.create" else {
             throw WebAuthnError.badRequestData
         }
-        guard origin == clientObject.origin else {
-            throw WebAuthnError.validationError
-        }
+//        guard origin == clientObject.origin else {
+//            throw WebAuthnError.validationError
+//        }
 
         guard let attestationData = data.response.attestationObject.base64URLDecodedData else {
             throw WebAuthnError.badRequestData
