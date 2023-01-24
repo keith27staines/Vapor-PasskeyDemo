@@ -8,7 +8,6 @@ func routes(_ app: Application) throws {
     }
     
     app.get(".well-known", "apple-app-site-association") { req -> Response in
-        let appIdentifier = "TeamIdentifier.bundleIdentifier"
         let responseString =
             """
             {
@@ -16,7 +15,8 @@ func routes(_ app: Application) throws {
                     "details": [
                         {
                             "appIDs": [
-                                "\(appIdentifier)"
+                                "PPH9EJ7977.uk.co.bbc.AuthToolkitIntegrationApp",
+                                "N53624Z834.uk.co.bbc.AuthToolkitIntegrationApp"
                             ],
                             "components": [
                             ]
@@ -25,10 +25,34 @@ func routes(_ app: Application) throws {
                 },
                 "webcredentials": {
                     "apps": [
-                        "\(appIdentifier)"
+                        "PPH9EJ7977.uk.co.bbc.AuthToolkitIntegrationApp",
+                        "N53624Z834.uk.co.bbc.AuthToolkitIntegrationApp"
                     ]
                 }
             }
+            """
+        let response = try await responseString.encodeResponse(for: req)
+        response.headers.contentType = HTTPMediaType(type: "application", subType: "json")
+        return response
+    }
+    
+    app.get(".well-known", "assetlinks.json") { req -> Response in
+        let responseString =
+            """
+            [
+                {
+                    "relation": [
+                        "delegate_permission/common.get_login_creds"
+                    ],
+                    "target": {
+                        "namespace": "android_app",
+                        "package_name": "uk.co.bbc.authtoolkit",
+                        "sha256_cert_fingerprints": [
+                            "F2:C8:46:88:86:1E:91:E1:12:FE:F9:BA:09:C9:6E:03:86:35:10:88:4D:FD:E3:C9:FA:F2:B6:D7:88:10:51:91"
+                        ]
+                    }
+                }
+            ]
             """
         let response = try await responseString.encodeResponse(for: req)
         response.headers.contentType = HTTPMediaType(type: "application", subType: "json")
